@@ -4,6 +4,8 @@
 
 Created by Kaê Angeli Coutinho
 
+_GNU GPL V2_
+
 ## Introduction
 
 **DFA** is a deterministic finite automaton (DFA) (regular languages (T3) recognizer) _C++_ library that makes it possible to define and evaluate dfa models easily.
