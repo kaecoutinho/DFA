@@ -18,10 +18,12 @@ Using builders, we would have something that looks like the following.
 
 ``` cpp
 DFA * dfa;
+DFABuilder dfaBuilder;
 StateBuilder builderQ0, builderQ1, builderQ2;
 
-builderQ2.buildName("q2")
-		->buildFinal(true);
+builderQ2
+  .buildName("q2")
+	->buildFinal(true);
 
 builderQ1
 	.buildName("q1")
@@ -33,14 +35,15 @@ builderQ0
 	->buildInitial(true)
 	->buildTransition("a",builderQ1.getBuildingInstance());
 
-dfa = DFABuilder()
-		.buildName("M")
-		->buildDescription("Recognizes the following regex: (a)⁺b")
-		->buildAlphabet("ab")
-		->buildState(builderQ0.build())
-		->buildState(builderQ1.build())
-		->buildState(builderQ2.build())
-		->build();
+dfaBuilder
+  .buildName("M")
+	->buildDescription("Recognizes the following regex: (a)⁺b")
+	->buildAlphabet("ab")
+	->buildState(builderQ0.build())
+	->buildState(builderQ1.build())
+	->buildState(builderQ2.build());
+
+dfa = dfaBuilder.build();
 ```
 
 Simple as that, we have a ready-to-go dfa model.
