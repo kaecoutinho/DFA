@@ -74,7 +74,7 @@ catch(const char * exception)
 
 There we go, a fully working dfa that validates any input provided.
 
-There's also a example file provided in the project folder called **Runtime.cpp**, showing more options and class methods that could be used.
+There's also a example file provided in the project folder called _Runtime.cpp_, showing more options and class methods that could be used.
 
 ## Changelog
 
