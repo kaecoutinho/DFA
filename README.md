@@ -16,31 +16,31 @@ Let's say we want to create a dfa that's capable of recognizing the following pa
 
 Using builders, we would have something that looks like the following.
 
-```
+``` cpp
 DFA * dfa;
 StateBuilder builderQ0, builderQ1, builderQ2;
 
 builderQ2.buildName("q2")
 		->buildFinal(true);
 
-	builderQ1
-		.buildName("q1")
-		->buildTransition("a",builderQ1.getBuildingInstance())
-		->buildTransition("b",builderQ2.getBuildingInstance());
+builderQ1
+	.buildName("q1")
+	->buildTransition("a",builderQ1.getBuildingInstance())
+	->buildTransition("b",builderQ2.getBuildingInstance());
 
-	builderQ0
-		.buildName("q0")
-		->buildInitial(true)
-		->buildTransition("a",builderQ1.getBuildingInstance());
+builderQ0
+	.buildName("q0")
+	->buildInitial(true)
+	->buildTransition("a",builderQ1.getBuildingInstance());
 
-	dfa = DFABuilder()
-			.buildName("M")
-			->buildDescription("Recognizes the following regex: (a)⁺b")
-			->buildAlphabet("ab")
-			->buildState(builderQ0.build())
-			->buildState(builderQ1.build())
-			->buildState(builderQ2.build())
-			->build();
+dfa = DFABuilder()
+		.buildName("M")
+		->buildDescription("Recognizes the following regex: (a)⁺b")
+		->buildAlphabet("ab")
+		->buildState(builderQ0.build())
+		->buildState(builderQ1.build())
+		->buildState(builderQ2.build())
+		->build();
 ```
 
 Simple as that, we have a ready-to-go dfa model.
@@ -49,10 +49,10 @@ You could also build the dfa without using the builder, which is not recommended
 
 Now we want to evaluate that model using a provided input such as: "_aab_".
 
-```
+``` cpp
 try
 {
-	if(dfa->validate("aab"))
+  if(dfa->validate("aab"))
   {
     cout << "Valid input" << endl;
   }
