@@ -66,6 +66,10 @@ try
     cout << "Invalid input" << endl;
   }
 }
+catch(const string exception)
+{
+	cout << exception << endl;
+}
 catch(const char * exception)
 {
 	cout << exception << endl;
