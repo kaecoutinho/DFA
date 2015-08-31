@@ -19,6 +19,7 @@ class DFA
 		string description;
 		string alphabet;
 		vector<State *> states;
+		string exceptionDescription;
 		bool DFAValid;
 		bool allTransitionsPresent;
 		void invalidate();

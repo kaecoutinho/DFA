@@ -15,6 +15,7 @@ DFA::DFA(string name, string description, string alphabet, vector<State *> state
 	this->description = description;
 	this->alphabet = alphabet;
 	this->states = states;
+	this->exceptionDescription.clear();
 	this->invalidate();
 }
 
@@ -35,6 +36,7 @@ bool DFA::isDFAValid()
 	if(!this->DFAValid)
 	{
 		State * initialState = NULL;
+		this->exceptionDescription.clear();
 		this->trimSymbols();
 		for(int index = 0; index < this->states.size(); index++)
 		{
@@ -47,6 +49,7 @@ bool DFA::isDFAValid()
 					if(currentState->hasNondeterministicTransitions())
 					{
 						valid = false;
+						this->exceptionDescription = "nondeterministic transitions were found";
 						break;
 					}
 					if(initialState == NULL)
@@ -61,6 +64,7 @@ bool DFA::isDFAValid()
 						if(currentState->isInitial())
 						{
 							valid = false;
+							this->exceptionDescription = "multiple initial states were found";
 							break;
 						}
 					}
@@ -71,16 +75,19 @@ bool DFA::isDFAValid()
 						if(!this->hasState(aux->getSource()) && aux->getSource() != State::ERROR_STATE || !this->hasState(aux->getDestination()) && aux->getDestination() != State::ERROR_STATE)
 						{
 							valid = false;
+							this->exceptionDescription = "transitions have unrelated source or destination states";
 							break;
 						}
 						if(!this->areSymbolsInAlphabet(aux->getSymbols()))
 						{
 							valid = false;
+							this->exceptionDescription = "transitions have symbols that do not belong to the alphabet";
 							break;
 						}
 						if(aux->hasEmptyWord())
 						{
 							valid = false;
+							this->exceptionDescription = "transitions have the empty word as symbol";
 							break;
 						}
 					}
@@ -88,6 +95,7 @@ bool DFA::isDFAValid()
 				else
 				{
 					valid = false;
+					this->exceptionDescription = "error states must not be listed in the states vector as they are only null pointers";
 					break;
 				}
 			}
@@ -419,12 +427,12 @@ bool DFA::validate(string input, bool deepValidation, bool verbose, int delay, o
 			}
 			else
 			{
-				throw DFA::INVALID_INPUT_EXCEPTION;
+				throw DFA::INVALID_INPUT_EXCEPTION + ": " + input;
 			}
 		}
 		else
 		{
-			throw DFA::INVALID_DFA_EXCEPTION;
+			throw DFA::INVALID_DFA_EXCEPTION + ": " + this->exceptionDescription;
 		}
 	}
 	else
@@ -439,7 +447,7 @@ bool DFA::validate(string input, bool deepValidation, bool verbose, int delay, o
 		}
 		else
 		{
-			throw DFA::INVALID_INPUT_EXCEPTION;
+			throw DFA::INVALID_INPUT_EXCEPTION + ": " + input;
 		}
 	}
 }
@@ -457,6 +465,7 @@ void DFA::clear()
 		}
 	}
 	this->states.clear();
+	this->exceptionDescription.clear();
 	this->invalidate();
 }
 
