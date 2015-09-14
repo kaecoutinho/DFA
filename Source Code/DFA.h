@@ -9,6 +9,20 @@
 
 using namespace std;
 
+typedef struct DFAValidationResult
+{
+	bool valid;
+	State * currentState;				
+}
+DFAValidationResult;
+
+void initializeDFAValidationResult(DFAValidationResult & dfaValidationResult);
+void destroyDFAValidationResult(DFAValidationResult & dfaValidationResult);
+void setValidToDFAValidationResult(DFAValidationResult & dfaValidationResult, bool valid);
+void setCurrentStateToDFAValidationResult(DFAValidationResult & dfaValidationResult, State * state);
+bool getValidFromDFAValidationResult(DFAValidationResult & dfaValidationResult);
+State * getCurrentStateFromDFAValidationResult(DFAValidationResult & dfaValidationResult);
+
 class DFA
 {
 	private:
@@ -33,7 +47,7 @@ class DFA
 		void printPathTraceToFile(vector<string> pathTrace, ofstream * fileToPrint);
 		bool areAllTransitionsPresent();
 		void addMissingTransitions();
-		bool analyse(string input, bool verbose, int delay, ofstream * fileToPrint);
+		DFAValidationResult analyse(string input, bool verbose, int delay, ofstream * fileToPrint);
 		string getInfo();
 
 	public:
@@ -53,7 +67,7 @@ class DFA
 		bool removeState(State * state);
 		bool removeState(string name);
 		void preValidate();
-		bool validate(string input, bool deepValidation = true, bool verbose = false, int delay = DFA::NO_DELAY, ofstream * fileToPrint = NULL);
+		DFAValidationResult validate(string input, bool deepValidation = true, bool verbose = false, int delay = DFA::NO_DELAY, ofstream * fileToPrint = NULL);
 		void clear();
 		void printInfo(ofstream * fileToPrint = NULL);
 		friend ostream & operator <<(ostream & output, DFA & dfa);

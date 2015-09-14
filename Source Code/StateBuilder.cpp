@@ -43,6 +43,12 @@ StateBuilder * StateBuilder::buildTransition(string symbols, State * destination
 	return this;
 }
 
+StateBuilder * StateBuilder::buildRecognitionMessage(string recognitionMessage)
+{
+	this->state->setRecognitionMessage(recognitionMessage);
+	return this;
+}
+
 State * StateBuilder::build()
 {
 	return this->state;

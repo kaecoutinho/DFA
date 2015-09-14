@@ -25,21 +25,24 @@ StateBuilder builderQ0, builderQ1, builderQ2;
 
 builderQ2
   .buildName("q2")
+  ->buildRecognitionMessage("recognized regex of type (a)⁺b")
 	->buildFinal(true);
 
 builderQ1
 	.buildName("q1")
+  ->buildRecognitionMessage("recognition failed")
 	->buildTransition("a",builderQ1.getBuildingInstance())
 	->buildTransition("b",builderQ2.getBuildingInstance());
 
 builderQ0
 	.buildName("q0")
+  ->buildRecognitionMessage("recognition failed")
 	->buildInitial(true)
 	->buildTransition("a",builderQ1.getBuildingInstance());
 
 dfaBuilder
   .buildName("M")
-	->buildDescription("Recognizes the following regex: (a)⁺b")
+	->buildDescription("recognizes the following regex: (a)⁺b")
 	->buildAlphabet("ab")
 	->buildState(builderQ0.build())
 	->buildState(builderQ1.build())
@@ -57,7 +60,7 @@ Now we want to evaluate that model using a provided input such as: "_aab_".
 ``` cpp
 try
 {
-  if(dfa->validate("aab"))
+  if(getValidFromDFAValidationResult(dfa->validate("aab")))
   {
     cout << "Valid input" << endl;
   }
@@ -81,6 +84,14 @@ There we go, a fully working dfa that validates any input provided.
 There's also a example file provided in the project folder called _Runtime.cpp_, showing more options and class methods that could be used.
 
 ## Changelog
+
+#### Version 1.1
+
+<ul>
+  <li>Improvements to DFA structure</li>
+  <li>DFAValidationResult type</li>
+  <li>Better logs</li>
+</ul>
 
 #### Version 1.0
 

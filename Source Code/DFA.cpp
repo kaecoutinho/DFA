@@ -9,6 +9,37 @@ const string DFA::INVALID_INPUT_EXCEPTION = "Invalid input";
 const int DFA::NO_DELAY = 0;
 const string DFA::EMPTY_WORD = "ϵ";
 
+void initializeDFAValidationResult(DFAValidationResult & dfaValidationResult)
+{
+	dfaValidationResult.valid = false;
+	dfaValidationResult.currentState = NULL;
+}
+
+void destroyDFAValidationResult(DFAValidationResult & dfaValidationResult)
+{
+	dfaValidationResult.currentState = NULL;
+}
+
+void setValidToDFAValidationResult(DFAValidationResult & dfaValidationResult, bool valid)
+{
+	dfaValidationResult.valid = valid;
+}
+
+void setCurrentStateToDFAValidationResult(DFAValidationResult & dfaValidationResult, State * state)
+{
+	dfaValidationResult.currentState = state;
+}
+
+bool getValidFromDFAValidationResult(DFAValidationResult & dfaValidationResult)
+{
+	return dfaValidationResult.valid;
+}
+
+State * getCurrentStateFromDFAValidationResult(DFAValidationResult & dfaValidationResult)
+{
+	return dfaValidationResult.currentState;
+}
+
 DFA::DFA(string name, string description, string alphabet, vector<State *> states)
 {
 	this->name = name;
@@ -161,6 +192,7 @@ void DFA::printPathTraceToConsole(vector<string> pathTrace, int delay)
 		}
 		cout << "\t" << pathTrace[index] << endl;
 	}
+	cout << endl;
 }
 
 void DFA::printPathTraceToFile(vector<string> pathTrace, ofstream * fileToPrint)
@@ -170,6 +202,7 @@ void DFA::printPathTraceToFile(vector<string> pathTrace, ofstream * fileToPrint)
 	{
 		(*fileToPrint) << "\t" << pathTrace[index] << endl;
 	}
+	(*fileToPrint) << endl;
 }
 
 bool DFA::areAllTransitionsPresent()
@@ -204,18 +237,20 @@ void DFA::addMissingTransitions()
 	this->allTransitionsPresent = true;
 }
 
-bool DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
+DFAValidationResult DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
 {
+	DFAValidationResult result;
 	bool valid = true, changedState;
 	State * currentState = this->getInitialState(), * oldState;
 	vector<string> pathTrace;
 	char currentSymbol;
 	Transition * currentTransition;
 	ostringstream aux;
-	aux << "Input: " << ((input.length() > 0) ? input : DFA::EMPTY_WORD);
+	initializeDFAValidationResult(result);
+	aux << "Input: " << ((input.length() > 0) ? input : DFA::EMPTY_WORD) << endl;
 	pathTrace.push_back(aux.str());
 	aux.str("");
-	aux << "Initialized at " << currentState->getName();
+	aux << "Initialized at " << currentState->getName() << endl;
 	pathTrace.push_back(aux.str());
 	for(int index = 0; index < input.length(); index++)
 	{
@@ -227,7 +262,7 @@ bool DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
 				currentSymbol = input[index];
 				changedState = false;
 				for(int transitionIndex = 0; transitionIndex < currentState->getTransitions().size(); transitionIndex++)
-				{	
+				{
 					currentTransition = currentState->getTransitions()[transitionIndex];
 					if(currentTransition->hasSymbol(currentSymbol))
 					{
@@ -235,12 +270,12 @@ bool DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
 						currentState = currentTransition->getDestination();
 						if(currentState != State::ERROR_STATE)
 						{
-							aux << ((oldState != State::ERROR_STATE) ? oldState->getName() : State::ERROR_STATE_NAME) << " -> Read '" << currentSymbol << "' -> " << currentState->getName();
+							aux << "\t" << ((oldState != State::ERROR_STATE) ? oldState->getName() : State::ERROR_STATE_NAME) << " -> Read '" << currentSymbol << "' -> " << currentState->getName();
 							changedState = true;
 						}
 						else
 						{
-							aux << ((oldState != State::ERROR_STATE) ? oldState->getName() : State::ERROR_STATE_NAME) << " -> Read '" << currentSymbol << "' -> " << State::ERROR_STATE_NAME;
+							aux << "\t" << ((oldState != State::ERROR_STATE) ? oldState->getName() : State::ERROR_STATE_NAME) << " -> Read '" << currentSymbol << "' -> " << State::ERROR_STATE_NAME;
 							valid = false;
 						}
 						pathTrace.push_back(aux.str());
@@ -262,21 +297,39 @@ bool DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
 		}
 	}
 	aux.str("");
+	if((input.length() > 0))
+	{
+		pathTrace.push_back("");
+	}
 	if(valid && currentState != State::ERROR_STATE)
 	{
 		if(currentState->isFinal())
 		{
-			aux << "Input succeeded";
+			aux << "Input succeeded" << endl;
 		}
 		else
 		{
-			aux << "Input failed";
+			aux << "Input failed" << endl;
 			valid = false;
 		}
+		pathTrace.push_back(aux.str());
+		aux.str("");
+		aux << "Recognition message: " << currentState->getRecognitionMessage();
 	}
 	else
 	{
-		aux << "Input failed";
+		aux << "Input failed" << endl;
+		pathTrace.push_back(aux.str());
+		aux.str("");
+		aux << "Recognition message: " << ((currentState != State::ERROR_STATE) ? currentState->getRecognitionMessage() : State::ERROR_STATE_NAME + " state has no recognition message");
+		if(currentState != State::ERROR_STATE)
+		{
+
+		}
+		else
+		{
+
+		}
 		valid = false;
 	}
 	pathTrace.push_back(aux.str());
@@ -288,7 +341,9 @@ bool DFA::analyse(string input, bool verbose, int delay, ofstream * fileToPrint)
 	{
 		this->printPathTraceToFile(pathTrace,fileToPrint);
 	}
-	return valid;
+	setValidToDFAValidationResult(result,valid);
+	setCurrentStateToDFAValidationResult(result,currentState);
+	return result;
 }
 
 string DFA::getInfo()
@@ -411,7 +466,7 @@ void DFA::preValidate()
 	this->isDFAValid();
 }
 
-bool DFA::validate(string input, bool deepValidation, bool verbose, int delay, ofstream * fileToPrint)
+DFAValidationResult DFA::validate(string input, bool deepValidation, bool verbose, int delay, ofstream * fileToPrint)
 {
 	if(deepValidation)
 	{
@@ -443,7 +498,7 @@ bool DFA::validate(string input, bool deepValidation, bool verbose, int delay, o
 			{
 				this->addMissingTransitions();
 			}
-			return this->analyse(input,verbose,delay,fileToPrint);			
+			return this->analyse(input,verbose,delay,fileToPrint);
 		}
 		else
 		{

@@ -21,6 +21,7 @@ class StateBuilder
 		StateBuilder * buildFinal(bool final);
 		StateBuilder * buildTransitions(vector<Transition *> transitions);
 		StateBuilder * buildTransition(string symbols, State * destination);
+		StateBuilder * buildRecognitionMessage(string recognitionMessage);
 		State * build();
 		State * getBuildingInstance();
 		StateBuilder * reset(bool releaseInstance = false);

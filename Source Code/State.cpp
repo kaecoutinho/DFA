@@ -7,12 +7,13 @@ const State * State::ERROR_STATE = NULL;
 const string State::ERROR_STATE_NAME = "ERROR";
 const int State::EQUAL_STRINGS = 0;
 
-State::State(string name, bool initial, bool final, vector<Transition *> transitions)
+State::State(string name, bool initial, bool final, vector<Transition *> transitions, string recognitionMessage)
 {
 	this->name = name;
 	this->initial = initial;
 	this->final = final;
 	this->transitions = transitions;
+	this->recognitionMessage = recognitionMessage;
 }
 
 State::~State()
@@ -64,6 +65,7 @@ string State::getInfo()
 		}
 	}
 	stringStream << endl;
+	stringStream << "\t recognitionMessage: " << this->recognitionMessage << endl;
 	return stringStream.str();
 }
 
@@ -87,6 +89,11 @@ void State::setTransitions(vector<Transition *> transitions)
 	this->transitions = transitions;
 }
 
+void State::setRecognitionMessage(string recognitionMessage)
+{
+	this->recognitionMessage = recognitionMessage;
+}
+
 string State::getName()
 {
 	return this->name;
@@ -105,6 +112,11 @@ bool State::isFinal()
 vector<Transition *> State::getTransitions()
 {
 	return this->transitions;
+}
+
+string State::getRecognitionMessage()
+{
+	return this->recognitionMessage;
 }
 
 void State::addTransition(string symbols, State * destination)
@@ -270,6 +282,7 @@ void State::clear()
 		}
 	}
 	this->transitions.clear();
+	this->recognitionMessage.clear();
 }
 
 void State::printInfo(ofstream * fileToPrint)

@@ -17,21 +17,24 @@ class State
 		bool initial;
 		bool final;
 		vector<Transition *> transitions;
+		string recognitionMessage;
 		string getInfo();
 
 	public:
 		static const State * ERROR_STATE;
 		static const string ERROR_STATE_NAME;
-		State(string name = "Nameless state", bool initial = false, bool final = false, vector<Transition *> transitions = vector<Transition *>());
+		State(string name = "Nameless state", bool initial = false, bool final = false, vector<Transition *> transitions = vector<Transition *>(), string recognitionMessage = "Not recognizable");
 		~State();
 		void setName(string name);
 		void setInitial(bool initial);
 		void setFinal(bool final);
 		void setTransitions(vector<Transition *> transitions);
+		void setRecognitionMessage(string recognitionMessage);
 		string getName();
 		bool isInitial();
 		bool isFinal();
 		vector<Transition *> getTransitions();
+		string getRecognitionMessage();
 		void addTransition(string symbols, State * destination);
 		bool removeTransition(State * destination);
 		bool removeTransition(string destination);
