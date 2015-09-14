@@ -26,27 +26,27 @@ StateBuilder builderQ0, builderQ1, builderQ2;
 builderQ2
   .buildName("q2")
   ->buildRecognitionMessage("recognized regex of type (a)⁺b")
-	->buildFinal(true);
+  ->buildFinal(true);
 
 builderQ1
-	.buildName("q1")
+  .buildName("q1")
   ->buildRecognitionMessage("recognition failed")
-	->buildTransition("a",builderQ1.getBuildingInstance())
-	->buildTransition("b",builderQ2.getBuildingInstance());
+  ->buildTransition("a",builderQ1.getBuildingInstance())
+  ->buildTransition("b",builderQ2.getBuildingInstance());
 
 builderQ0
-	.buildName("q0")
+  .buildName("q0")
   ->buildRecognitionMessage("recognition failed")
-	->buildInitial(true)
-	->buildTransition("a",builderQ1.getBuildingInstance());
+  ->buildInitial(true)
+  ->buildTransition("a",builderQ1.getBuildingInstance());
 
 dfaBuilder
   .buildName("M")
-	->buildDescription("recognizes the following regex: (a)⁺b")
-	->buildAlphabet("ab")
-	->buildState(builderQ0.build())
-	->buildState(builderQ1.build())
-	->buildState(builderQ2.build());
+  ->buildDescription("recognizes the following regex: (a)⁺b")
+  ->buildAlphabet("ab")
+  ->buildState(builderQ0.build())
+  ->buildState(builderQ1.build())
+  ->buildState(builderQ2.build());
 
 dfa = dfaBuilder.build();
 ```
