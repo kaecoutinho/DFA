@@ -51,6 +51,76 @@ dfaBuilder
 dfa = dfaBuilder.build();
 ```
 
+Using a JSON file, we could also define our model.
+
+```json
+{
+	"name":"G",
+	"description":"another dfa that recognizes the following regex: (a)⁺b",
+	"alphabet":"ab",
+	"states":
+	[
+		{
+			"name":"q0",
+			"initial":true,
+			"final":false,
+			"recognitionMessage":"recognition failed",
+			"transitions":
+			[
+				{
+					"symbol":"a",
+					"destination":"q1"
+				}
+			]
+		},
+		{
+			"name":"q1",
+			"initial":false,
+			"final":false,
+			"recognitionMessage":"recognition failed",
+			"transitions":
+			[
+				{
+					"symbol":"a",
+					"destination":"q1"
+				},
+				{
+					"symbol":"b",
+					"destination":"q2"
+				}
+			]
+		},
+		{
+			"name":"q2",
+			"initial":false,
+			"final":true,
+			"recognitionMessage":"recognized regex of type (a)⁺b",
+			"transitions":[]
+		}
+	]
+}
+```
+
+And the JSON file implementation would look like the following.
+
+```cpp
+DFA * dfa;
+ifstream dfaJSONModelFile(INPUT_FILE_NAME);
+
+try
+{
+	dfa = new DFA(dfaJSONModelFile);
+}
+catch(const string exception)
+{
+	cout << exception << endl;
+}
+catch(const char * exception)
+{
+	cout << exception << endl;
+}
+```
+
 Simple as that, we have a ready-to-go dfa model.
 
 You could also build the dfa without using the builder, which is not recommended.
@@ -81,9 +151,16 @@ catch(const char * exception)
 
 There we go, a fully working dfa that validates any input provided.
 
-There's also a example file provided in the project folder called _Runtime.cpp_, showing more options and class methods that could be used.
+There's also a example file provided in the project folder called [_Runtime.cpp_](https://github.com/kaiky25/DFA/blob/master/Source%20Code/Runtime.cpp), showing more options and class methods that could be used.
 
 ## Changelog
+
+#### Version 1.2
+
+<ul>
+  <li>JSON compatibility</li>
+  <li>Better structure</li>
+</ul>
 
 #### Version 1.1
 
