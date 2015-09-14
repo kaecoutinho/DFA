@@ -36,6 +36,7 @@ class State
 		vector<Transition *> getTransitions();
 		string getRecognitionMessage();
 		void addTransition(string symbols, State * destination);
+		void addTransition(Transition * transition);
 		bool removeTransition(State * destination);
 		bool removeTransition(string destination);
 		bool removeTransition(Transition * transition);

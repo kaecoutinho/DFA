@@ -6,6 +6,7 @@
 const int DFA::EQUAL_STRINGS = 0;
 const string DFA::INVALID_DFA_EXCEPTION = "Invalid DFA";
 const string DFA::INVALID_INPUT_EXCEPTION = "Invalid input";
+const string DFA::INVALID_JSON_MODEL_EXCEPTION = "Invalid JSON model";
 const int DFA::NO_DELAY = 0;
 const string DFA::EMPTY_WORD = "ϵ";
 
@@ -46,6 +47,13 @@ DFA::DFA(string name, string description, string alphabet, vector<State *> state
 	this->description = description;
 	this->alphabet = alphabet;
 	this->states = states;
+	this->exceptionDescription.clear();
+	this->invalidate();
+}
+
+DFA::DFA(ifstream & dfaModelFile)
+{
+	this->parseJSONFile(dfaModelFile);
 	this->exceptionDescription.clear();
 	this->invalidate();
 }
@@ -379,6 +387,181 @@ string DFA::getInfo()
 	}
 	stringStream << endl;
 	return stringStream.str();
+}
+
+void DFA::parseJSONFile(ifstream & dfaModelFile)
+{
+	stringstream buffer;
+	Document jsonDocument;
+	bool valid = true;
+	buffer << dfaModelFile.rdbuf();
+	jsonDocument.Parse<0>(buffer.str().c_str());
+	if(!jsonDocument.IsObject())
+	{
+		this->exceptionDescription = "DFA value declared using wrong type, only one model is allowed";
+		valid = false;
+	}
+	if(valid)
+	{
+		if(jsonDocument.HasMember("name") && jsonDocument.HasMember("description") && jsonDocument.HasMember("alphabet"))
+		{
+			if(jsonDocument["name"].IsString() && jsonDocument["description"].IsString() && jsonDocument["alphabet"].IsString())
+			{
+				this->name = jsonDocument["name"].GetString();
+				this->description = jsonDocument["description"].GetString();
+				this->alphabet = jsonDocument["alphabet"].GetString();
+			}
+			else
+			{
+				this->exceptionDescription = "DFA name, description or alphabet values declared using wrong type";
+				valid = false;
+			}
+		}
+		else
+		{
+			this->exceptionDescription = "DFA name, description or alphabet keys missing";
+			valid = false;
+		}
+	}
+	if(valid)
+	{
+		if(jsonDocument.HasMember("states"))
+		{
+			if(jsonDocument["states"].IsArray())
+			{
+				const Value& statesKey = jsonDocument["states"];
+				for(SizeType index = 0; index < statesKey.Size(); index++)
+				{
+					if(statesKey[index].IsObject())
+					{
+						if(statesKey[index].HasMember("name") && statesKey[index].HasMember("initial") && statesKey[index].HasMember("final") && statesKey[index].HasMember("recognitionMessage"))
+						{
+							if(statesKey[index]["name"].IsString() && statesKey[index]["initial"].IsBool() && statesKey[index]["final"].IsBool() && statesKey[index]["recognitionMessage"].IsString())
+							{
+								this->states.push_back(new State(statesKey[index]["name"].GetString(),statesKey[index]["initial"].GetBool(),statesKey[index]["final"].GetBool(),vector<Transition *>(),statesKey[index]["recognitionMessage"].GetString()));
+							}
+							else
+							{
+								this->exceptionDescription = "State name, initial, final or recognitionMessage values declared using wrong type";
+								valid = false;
+							}
+						}
+						else
+						{
+							this->exceptionDescription = "State name, initial, final or recognitionMessage keys missing";
+							valid = false;
+						}
+					}
+					else
+					{
+						this->exceptionDescription = "State value declared using wrong type";
+						valid = false;
+					}
+				}
+			}
+			else
+			{
+				this->exceptionDescription = "DFA states value declared using wrong type missing";
+				valid = false;
+			}
+		}
+		else
+		{
+			this->exceptionDescription = "DFA states key missing";
+			valid = false;
+		}
+	}
+	if(valid)
+	{
+		const Value& statesKey = jsonDocument["states"];
+		for(SizeType index = 0; index < statesKey.Size(); index++)
+		{
+			if(statesKey[index].HasMember("transitions"))
+			{
+				if(statesKey[index]["transitions"].IsArray())
+				{
+					const Value& transitionsKey = statesKey[index]["transitions"];
+					State * currentState = this->findState(statesKey[index]["name"].GetString());
+					if(currentState != State::ERROR_STATE)
+					{
+						for(SizeType transitionsKeyIndex = 0; transitionsKeyIndex < transitionsKey.Size(); transitionsKeyIndex++)
+						{
+							if(transitionsKey[transitionsKeyIndex].IsObject())
+							{
+								if(transitionsKey[transitionsKeyIndex].HasMember("symbol") && transitionsKey[transitionsKeyIndex].HasMember("destination"))
+								{
+									if(transitionsKey[transitionsKeyIndex]["symbol"].IsString() && transitionsKey[transitionsKeyIndex]["destination"].IsString())
+									{
+										currentState->addTransition(transitionsKey[transitionsKeyIndex]["symbol"].GetString(),this->findState(transitionsKey[transitionsKeyIndex]["destination"].GetString()));
+									}
+									else
+									{
+										this->exceptionDescription = "Transition symbol or destination values declared using wrong type";
+										valid = false;
+									}
+								}
+								else
+								{
+									this->exceptionDescription = "Transition symbol or destination keys missing";
+									valid = false;
+								}
+							}
+							else
+							{
+								this->exceptionDescription = "Transition value declared using wrong type";
+								valid = false;
+							}
+						}
+					}
+					else
+					{
+						this->exceptionDescription = "Unknown error";
+						valid = false;
+					}
+				}
+				else
+				{
+					this->exceptionDescription = "State transitions value declared using wrong type missing";
+					valid = false;
+				}
+			}
+			else
+			{
+				this->exceptionDescription = "State transitions key missing";
+				valid = false;
+			}
+		}
+	}
+	if(!valid)
+	{
+		string helper = this->exceptionDescription;
+		this->clear();
+		throw INVALID_JSON_MODEL_EXCEPTION + ": " + helper;
+	}
+}
+
+State * DFA::findState(State * state)
+{
+	if(state != State::ERROR_STATE)
+	{
+		return this->findState(state->getName());
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+State * DFA::findState(string name)
+{
+	for(int index = 0; index < this->states.size(); index++)
+	{
+		if(this->states[index]->getName().compare(name) == DFA::EQUAL_STRINGS)
+		{
+			return this->states[index];
+		}
+	}
+	return NULL;
 }
 
 void DFA::setName(string name)

@@ -1,0 +1,45 @@
+{
+	"name":"G",
+	"description":"another dfa that recognizes the following regex: (a)⁺b",
+	"alphabet":"ab",
+	"states":
+	[
+		{
+			"name":"q0",
+			"initial":true,
+			"final":false,
+			"recognitionMessage":"recognition failed",
+			"transitions":
+			[
+				{
+					"symbol":"a",
+					"destination":"q1"
+				}
+			]
+		},
+		{
+			"name":"q1",
+			"initial":false,
+			"final":false,
+			"recognitionMessage":"recognition failed",
+			"transitions":
+			[
+				{
+					"symbol":"a",
+					"destination":"q1"
+				},
+				{
+					"symbol":"b",
+					"destination":"q2"
+				}
+			]
+		},
+		{
+			"name":"q2",
+			"initial":false,
+			"final":true,
+			"recognitionMessage":"recognized regex of type (a)⁺b",
+			"transitions":[]
+		}
+	]
+}

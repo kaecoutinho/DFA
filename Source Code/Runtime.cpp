@@ -6,7 +6,8 @@
 #include "DFABuilder.h"
 #include "StateBuilder.h"
 #define INPUT_QUANTITY 7
-#define FILE_NAME "Results.txt"
+#define OUTPUT_FILE_NAME "Results.txt"
+#define INPUT_FILE_NAME "DFAModel.json"
 
 using namespace std;
 
@@ -17,7 +18,8 @@ int main(int argc, char ** argv)
 	DFA * dfa;
 	DFABuilder dfaBuilder;
 	StateBuilder builderQ0, builderQ1, builderQ2;
-	ofstream * file = new ofstream(FILE_NAME,ios::out);
+	ofstream * file = new ofstream(OUTPUT_FILE_NAME,ios::out);
+	ifstream dfaJSONModelFile(INPUT_FILE_NAME);
 
 	builderQ2
 		.buildName("q2")
@@ -54,7 +56,9 @@ int main(int argc, char ** argv)
 		{
 			if(index == 0)
 			{
+				dfa->printInfo();
 				dfa->printInfo(file);
+				cout << endl;
 				(*file) << endl;
 			}
 			DFAValidationResult result = dfa->validate(inputs[index],true,true,DFA::NO_DELAY,file);
@@ -84,6 +88,23 @@ int main(int argc, char ** argv)
 
 	delete dfa;
 	delete file;
+
+	try
+	{
+		dfa = new DFA(dfaJSONModelFile);
+		dfa->printInfo();
+		cout << endl;
+	}
+	catch(const string exception)
+	{
+		cout << exception << endl;
+	}
+	catch(const char * exception)
+	{
+		cout << exception << endl;
+	}
+
+	delete dfa;
 
 	return EXIT_SUCCESS;
 }

@@ -121,7 +121,12 @@ string State::getRecognitionMessage()
 
 void State::addTransition(string symbols, State * destination)
 {
-	this->transitions.push_back(new Transition(this,symbols,destination));
+	this->addTransition(new Transition(this,symbols,destination));
+}
+
+void State::addTransition(Transition * transition)
+{
+	this->transitions.push_back(transition);
 }
 
 bool State::removeTransition(State * destination)

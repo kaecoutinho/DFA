@@ -5,9 +5,12 @@
 #define __dfa__
 
 #include <unistd.h>
+#include <cstdio>
 #include "State.h"
+#include "rapidjson/document.h"
 
 using namespace std;
+using namespace rapidjson;
 
 typedef struct DFAValidationResult
 {
@@ -29,6 +32,7 @@ class DFA
 		static const int EQUAL_STRINGS;
 		static const string INVALID_DFA_EXCEPTION;
 		static const string INVALID_INPUT_EXCEPTION;
+		static const string INVALID_JSON_MODEL_EXCEPTION;
 		string name;
 		string description;
 		string alphabet;
@@ -49,11 +53,15 @@ class DFA
 		void addMissingTransitions();
 		DFAValidationResult analyse(string input, bool verbose, int delay, ofstream * fileToPrint);
 		string getInfo();
+		void parseJSONFile(ifstream & dfaModelFile);
+		State * findState(State * state);
+		State * findState(string name);
 
 	public:
 		static const int NO_DELAY;
 		static const string EMPTY_WORD;
 		DFA(string name = "Nameless DFA", string description = "No description", string alphabet = "", vector<State *> states = vector<State *>());
+		DFA(ifstream & dfaJSONModelFile);
 		~DFA();
 		void setName(string name);
 		void setDescription(string description);
