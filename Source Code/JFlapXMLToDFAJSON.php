@@ -58,6 +58,29 @@
 		}
 		for($index = 0; $index < count($json["states"]); $index++)
 		{
+			for($transitionIndex = 0; $transitionIndex < count($json["states"][$index]["transitions"]); $transitionIndex++)
+			{
+				for($aux = 0; $aux < count($json["states"][$index]["transitions"]); $aux++)
+				{
+					if($aux != $transitionIndex)
+					{
+						if(strcmp($json["states"][$index]["transitions"][$transitionIndex]["destination"],$json["states"][$index]["transitions"][$aux]["destination"]) == 0)
+						{
+							$json["states"][$index]["transitions"][$transitionIndex]["symbol"] .= $json["states"][$index]["transitions"][$aux]["symbol"];
+							array_splice($json["states"][$index]["transitions"],$aux--,1);
+						}
+					}
+				}
+			}
+			for($transitionIndex = 0; $transitionIndex < count($json["states"][$index]["transitions"]); $transitionIndex++)
+			{
+				$symbolParts = str_split($json["states"][$index]["transitions"][$transitionIndex]["symbol"]);
+				sort($symbolParts);
+				$json["states"][$index]["transitions"][$transitionIndex]["symbol"] = implode('',$symbolParts);
+			}
+		}
+		for($index = 0; $index < count($json["states"]); $index++)
+		{
 			unset($json["states"][$index]["id"]);
 		}
 		echo json_encode($json);
