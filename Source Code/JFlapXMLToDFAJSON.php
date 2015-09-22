@@ -31,7 +31,14 @@
 				$alphabet .= $currentSymbol;
 			}
 			$transitions[(string)$transition->from][$index]["symbol"] = $transitions[(string)$transition->from][$index]["symbol"] . $currentSymbol;
-			$transitions[(string)$transition->from][$index]["destination"] = (string)$transition->to;
+			foreach($json["states"] as $state)
+			{
+				if($state["id"] == (int)$transition->to)
+				{
+					$transitions[(string)$transition->from][$index]["destination"] = $state["name"];
+					break;
+				}
+			}
 			$index++;
 		}
 		$alphabetParts = str_split($alphabet);
