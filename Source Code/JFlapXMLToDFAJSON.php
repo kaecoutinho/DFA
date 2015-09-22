@@ -22,18 +22,21 @@
 			$json["states"][$index]["transitions"] = array();
 			$index++;
 		}
+		$index = 0;
 		foreach($xml->automaton->transition as $transition)
 		{
-			$index = 0;
 			$currentSymbol = (string)$transition->read;
 			if(strpos($alphabet,$currentSymbol) === FALSE)
 			{
 				$alphabet .= $currentSymbol;
 			}
-			$transitions[(string)$transition->from][$index]["symbol"] = (isset($transitions[(string)$transition->from][$index]["symbol"]) ? $transitions[(string)$transition->from][$index]["symbol"] . $currentSymbol : "");
+			$transitions[(string)$transition->from][$index]["symbol"] = $transitions[(string)$transition->from][$index]["symbol"] . $currentSymbol;
 			$transitions[(string)$transition->from][$index]["destination"] = (string)$transition->to;
 			$index++;
 		}
+		$alphabetParts = str_split($alphabet);
+		sort($alphabetParts);
+		$alphabet = implode('',$alphabetParts);
 		$json["alphabet"] = $alphabet;
 		$index = 0;
 		for($index = 0; $index < count($json["states"]); $index++)
