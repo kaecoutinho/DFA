@@ -1,0 +1,98 @@
+DFA
+	 name: M
+	 description: recognizes the following regex: (a)⁺b
+	 alphabet: {a,b}
+	 states: {q0,q1,q2}
+
+Path trace:
+
+	Input: aaa
+
+	Initialized at q0
+
+		q0 -> Read 'a' -> q1
+		q1 -> Read 'a' -> q1
+		q1 -> Read 'a' -> q1
+	
+	Input failed
+
+	Recognition message: recognition failed
+
+Path trace:
+
+	Input: aab
+
+	Initialized at q0
+
+		q0 -> Read 'a' -> q1
+		q1 -> Read 'a' -> q1
+		q1 -> Read 'b' -> q2
+	
+	Input succeeded
+
+	Recognition message: recognized regex of type (a)⁺b
+
+Path trace:
+
+	Input: aaba
+
+	Initialized at q0
+
+		q0 -> Read 'a' -> q1
+		q1 -> Read 'a' -> q1
+		q1 -> Read 'b' -> q2
+		q2 -> Read 'a' -> ERROR
+	
+	Input failed
+
+	Recognition message: ERROR state has no recognition message
+
+Path trace:
+
+	Input: aabb
+
+	Initialized at q0
+
+		q0 -> Read 'a' -> q1
+		q1 -> Read 'a' -> q1
+		q1 -> Read 'b' -> q2
+		q2 -> Read 'b' -> ERROR
+	
+	Input failed
+
+	Recognition message: ERROR state has no recognition message
+
+Path trace:
+
+	Input: ϵ
+
+	Initialized at q0
+
+	Input failed
+
+	Recognition message: recognition failed
+
+Path trace:
+
+	Input: baa
+
+	Initialized at q0
+
+		q0 -> Read 'b' -> ERROR
+	
+	Input failed
+
+	Recognition message: ERROR state has no recognition message
+
+Path trace:
+
+	Input: b
+
+	Initialized at q0
+
+		q0 -> Read 'b' -> ERROR
+	
+	Input failed
+
+	Recognition message: ERROR state has no recognition message
+
