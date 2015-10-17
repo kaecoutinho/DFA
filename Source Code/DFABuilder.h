@@ -1,5 +1,6 @@
 // DFABuilder.h
 // Kaê Angeli Coutinho
+// MIT license
 
 #ifndef __dfa_builder__
 #define __dfa_builder__
