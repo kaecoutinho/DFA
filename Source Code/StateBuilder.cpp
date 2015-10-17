@@ -1,5 +1,6 @@
 // StateBuilder.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "StateBuilder.h"
 
