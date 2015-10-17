@@ -1,5 +1,6 @@
 // StateBuilder.h
 // Kaê Angeli Coutinho
+// MIT license
 
 #ifndef __state_builder__
 #define __state_builder__
