@@ -1,5 +1,6 @@
 // State.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "State.h"
 
