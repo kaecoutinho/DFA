@@ -1,5 +1,6 @@
 # Makefile
 # Kaê Angeli Coutinho
+# MIT license
 
 # Constants
 
