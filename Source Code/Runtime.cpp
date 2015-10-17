@@ -1,5 +1,6 @@
 // Runtime.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "DFA.h"
 #include "State.h"
