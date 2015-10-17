@@ -1,5 +1,6 @@
 // DFABuilder.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "DFABuilder.h"
 
