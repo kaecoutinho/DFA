@@ -1,5 +1,6 @@
 // Transition.h
 // Kaê Angeli Coutinho
+// MIT license
 
 #ifndef __transition__
 #define __transition__
