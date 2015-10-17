@@ -4,7 +4,7 @@
 
 Created by Kaê Angeli Coutinho
 
-_GNU GPL V2_
+_MIT license_
 
 ## Introduction
 
