@@ -1,5 +1,6 @@
 // Transition.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "Transition.h"
 #include "State.h"
