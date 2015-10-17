@@ -1,5 +1,6 @@
 // State.h
 // Kaê Angeli Coutinho
+// MIT license
 
 #ifndef __state__
 #define __state__
