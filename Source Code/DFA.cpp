@@ -1,5 +1,6 @@
 // DFA.cpp
 // Kaê Angeli Coutinho
+// MIT license
 
 #include "DFA.h"
 
