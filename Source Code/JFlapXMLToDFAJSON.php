@@ -1,6 +1,7 @@
 <?php
 	// JFlapXMLToDFAJSON.h
 	// Kaê Angeli Coutinho
+	// MIT license
 
 	$file = $_GET["file"];
 	$name = $_GET["name"];
