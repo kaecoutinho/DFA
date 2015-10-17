@@ -1,5 +1,6 @@
 // DFA.h
 // Kaê Angeli Coutinho
+// MIT license
 
 #ifndef __dfa__
 #define __dfa__
